@@ -23,13 +23,12 @@ Chemically Informed AI Decoding of Full-Spectrum SERS Fingerprints for pH-Guided
 ## 目录结构
 
 - `configs/default_config.yaml`：配置（含 `prior` 化学先验峰）
-- `src/dataset.py`：真实数据/虚拟数据加载
+- `src/dataset.py`：数据加载
 - `src/model.py`：Swin 主干 + HH Head
 - `src/loss.py`：异方差 Gaussian NLL
 - `src/utils.py`：工具函数（含化学先验向量生成）
 - `train.py`：单模型训练（记录 `pka_prime`、`alpha`）
 - `train_ensemble.sh`：顺序训练 5 个独立模型
-- `inference.py`：集成推理，支持导出 `W` 强度图
 
 ## 环境安装
 
@@ -58,12 +57,6 @@ bash train_ensemble.sh
 
 ```bash
 python inference.py --config configs/default_config.yaml --ckpt_dir checkpoints --ensemble_size 5
-```
-
-## 导出可解释性强度图 W
-
-```bash
-python inference.py --config configs/default_config.yaml --ckpt_dir checkpoints --ensemble_size 5 --save_attention_map --output_dir outputs
 ```
 
 将保存：
