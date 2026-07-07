@@ -1,0 +1,53 @@
+# 核心网络：Swin Transformer + 化学先验 HH 解码头
+project:
+  name: "hh_swin_uncertainty"
+  output_dir: "outputs"
+  checkpoint_dir: "checkpoints"
+  log_dir: "logs"
+
+data:
+  dataset_type: "real"
+  dataset_root: "dataset"
+  signal_length: 1401
+  in_channels: 1
+  train_size: 2048
+  val_size: 256
+  test_size: 256
+  batch_size: 32
+  num_workers: 0
+
+model:
+  model_type: "hh_swin"
+  in_channels: 1
+  embed_dim: 64
+  patch_size: 4
+  window_size: 8
+  num_heads: 4
+  num_layers: 3
+  # 新增的 HH-Head 专属参数
+  hh_init_pka: 7.0
+  seq_len_after_patch: 350  # 重要: 1401 // 4 = 350
+  learnable_v_prior: true
+  prior_residual_scale: 10
+
+train:
+  epochs: 50
+  warmup_epochs: 5          # 前 5 个 epoch 用 MSE 预热均值
+  lr: 1e-3
+  weight_decay: 1e-4
+  grad_clip: 1.0
+  early_stopping_patience: 10
+  early_stopping_min_delta: 1e-4
+  use_amp: false
+  use_wandb: false
+  log_interval: 100
+
+inference:
+  ensemble_size: 5
+
+prior:
+  x_min: 200.0
+  x_max: 1600.0
+  window: 10.0
+  pos_peaks: [589.0, 681.0, 834.0]
+  neg_peaks: [1252.0, 1437.0]
